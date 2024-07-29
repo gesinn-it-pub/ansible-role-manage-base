@@ -1,0 +1,20 @@
+- name: Ensure Base | Setup docker https_proxy if required
+  environment: "{{ proxy_env }}"
+  block:
+    - name: Create /etc/systemd/system/docker.service.d
+      ansible.builtin.file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+    - name: Set docker https_proxy
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+        content: |
+          [Service]
+          Environment="HTTP_PROXY={{ proxy_env.http_proxy }}"
+          Environment="HTTPS_PROXY={{ proxy_env.https_proxy }}"
+      notify: Restart docker
+    - name: Create daemon.json
+      template:
+        src: files/docker/config.json
+        dest: /root/.docker/config.json
+  when: proxy_env.http_proxy is defined

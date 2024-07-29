@@ -1,15 +1,15 @@
-    - name: Ensure Base | Ensure roles
-      environment: "{{ proxy_env }}"
-      block:
-        - name: install pip
-          ansible.builtin.include_role:
-            name: geerlingguy.pip
-        - name: install docker
-          ansible.builtin.include_role:
-            name: geerlingguy.docker
-          vars:
-            docker_install_compose: true
-            docker_compose_path: /usr/local/bin/docker-compose
-        - name: install manage_traefik
-          ansible.builtin.include_role:
-            name: gesinn.manage_traefik
+- name: Ensure Base | Ensure roles
+  environment: "{{ proxy_env }}"
+  block:
+    - name: install pip
+      ansible.builtin.include_role:
+        name: geerlingguy.pip
+    - name: install docker
+      ansible.builtin.include_role:
+        name: geerlingguy.docker
+      vars:
+        docker_install_compose: true
+        docker_compose_path: /usr/local/bin/docker-compose
+    - name: install manage_traefik
+      ansible.builtin.include_role:
+        name: gesinn.manage_traefik
