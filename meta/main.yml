@@ -1,0 +1,12 @@
+---
+dependencies: []
+
+galaxy_info:
+  role_name: "manage_base"
+  namespace: gesinn
+  author: "gesinn.it"
+  description: Special purpose Ansible role to manage fundamental setups and configurations that are shared across "factory" environments.
+  issue_tracker_url: https://github.com/gesinn-it-pub/ansible-role-manage-base/issues
+  company: "gesinn.it GmbH & Co. KG"
+  license: "MIT"
+  min_ansible_version: "2.10"
