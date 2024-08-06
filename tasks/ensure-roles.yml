@@ -1,9 +1,9 @@
 - name: Ensure Base | Ensure roles
   environment: "{{ proxy_env }}"
   block:
-    - name: install pip
-      ansible.builtin.include_role:
-        name: geerlingguy.pip
+    # - name: install pip
+    #   ansible.builtin.include_role:
+    #     name: geerlingguy.pip
     - name: install docker
       ansible.builtin.include_role:
         name: geerlingguy.docker
