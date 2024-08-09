@@ -13,8 +13,8 @@
           Environment="HTTP_PROXY={{ proxy_env.http_proxy }}"
           Environment="HTTPS_PROXY={{ proxy_env.https_proxy }}"
       notify: Restart docker
-    - name: Create daemon.json
+    - name: Create config.json
       template:
-        src: files/docker/config.json
+        src: docker/config.json
         dest: /root/.docker/config.json
   when: proxy_env.http_proxy is defined
