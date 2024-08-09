@@ -15,6 +15,6 @@
       notify: Restart docker
     - name: Create config.json
       template:
-        src: docker/config.json
+        src: docker/config.json # move to files
         dest: /root/.docker/config.json
   when: proxy_env.http_proxy is defined
