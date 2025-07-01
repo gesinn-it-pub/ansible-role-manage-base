@@ -4,6 +4,8 @@
     - name: install pip
       ansible.builtin.include_role:
         name: geerlingguy.pip
+      vars:
+        pip_install_packages: "{{ pip_install_packages }}"
     - name: install docker
       ansible.builtin.include_role:
         name: geerlingguy.docker
