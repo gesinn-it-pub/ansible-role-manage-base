@@ -1,1 +1,2 @@
 proxy_env: {}
+docker_address_pools: []
