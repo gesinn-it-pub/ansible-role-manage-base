@@ -8,10 +8,10 @@
     - name: install docker
       ansible.builtin.include_role:
         name: geerlingguy.docker
-        vars:
-          docker_install_compose: true
-          docker_compose_path: /usr/local/bin/docker-compose
-          docker_daemon_options: "{{ {'default-address-pools': docker_address_pools} if (docker_address_pools | default([]) | length) > 0 else {} }}"
+      vars:
+        docker_install_compose: true
+        docker_compose_path: /usr/local/bin/docker-compose
+        docker_daemon_options: "{{ {'default-address-pools': docker_address_pools} if (docker_address_pools | default([]) | length) > 0 else {} }}"
 
     - name: install manage_traefik
       ansible.builtin.include_role:
