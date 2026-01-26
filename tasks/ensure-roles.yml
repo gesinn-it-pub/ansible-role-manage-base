@@ -26,10 +26,12 @@
 
 - name: Ensure Base | Verify Docker supports journald logging
   become: true
-  ansible.builtin.command: docker info --format '{{.Plugins.Log}}'
+  ansible.builtin.command: >
+    docker info --format '{% raw %}{{.Plugins.Log}}{% endraw %}'
   register: docker_log_plugins
   changed_when: false
   when: systemd_present.stat.exists
+
 
 - name: Ensure Base | Assert journald logging is available
   ansible.builtin.assert:
