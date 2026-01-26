@@ -1,2 +1,7 @@
+# defaults/main.yml
+
 proxy_env: {}
 docker_address_pools: []
+journald_max_retention: "7day"
+journald_system_max_use: "500M"
+journald_system_max_file_size: "50M"
