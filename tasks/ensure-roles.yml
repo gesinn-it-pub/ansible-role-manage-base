@@ -1,3 +1,4 @@
+---
 # tasks/ensure-roles.yml
 
 - name: Ensure Base | Ensure roles
@@ -18,50 +19,3 @@
     - name: install manage_traefik
       ansible.builtin.include_role:
         name: gesinn.manage_traefik
-
-- name: Ensure Base | Check if systemd is used
-  ansible.builtin.stat:
-    path: /run/systemd/system
-  register: systemd_present
-
-- name: Ensure Base | Verify Docker supports journald logging
-  become: true
-  ansible.builtin.command: >
-    docker info --format '{% raw %}{{.Plugins.Log}}{% endraw %}'
-  register: docker_log_plugins
-  changed_when: false
-  when: systemd_present.stat.exists
-
-
-- name: Ensure Base | Assert journald logging is available
-  ansible.builtin.assert:
-    that:
-      - "'journald' in docker_log_plugins.stdout"
-    fail_msg: "Docker does not support journald logging on this host."
-  when:
-    - systemd_present.stat.exists
-    - docker_log_plugins is defined
-
-- name: Ensure Base | Configure journald retention
-  become: true
-  when: systemd_present.stat.exists
-  block:
-    - name: Ensure drop-in directory exists
-      ansible.builtin.file:
-        path: /etc/systemd/journald.conf.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-    - name: Configure retention policy
-      ansible.builtin.copy:
-        dest: /etc/systemd/journald.conf.d/retention.conf
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          [Journal]
-          MaxRetentionSec={{ journald_max_retention }}
-          SystemMaxUse={{ journald_system_max_use }}
-          SystemMaxFileSize={{ journald_system_max_file_size }}
-      notify: Restart journald

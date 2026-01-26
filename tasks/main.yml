@@ -1,0 +1,23 @@
+---
+# tasks/main.yml
+
+# Default entry point for the role.
+#
+# Existing projects may still call specific task files via tasks_from:
+#
+# tasks:
+#   - name: Ensure Base | Ensure roles
+#     ansible.builtin.include_role:
+#       name: gesinn.manage_base
+#       tasks_from: ensure-roles.yml
+
+- name: Ensure base roles
+  ansible.builtin.import_tasks: ensure-roles.yml
+
+- name: Configure journald retention
+  ansible.builtin.import_tasks: configure-journald.yml
+  when: manage_base_configure_journald | default(true)
+
+- name: Setup proxy
+  ansible.builtin.import_tasks: setup-proxy.yml
+  when: manage_base_setup_proxy | default(false)
