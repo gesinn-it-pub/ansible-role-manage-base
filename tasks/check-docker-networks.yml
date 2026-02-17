@@ -15,7 +15,9 @@
 
 
 - name: Ensure Base | Collect Docker networks
-  ansible.builtin.command: docker network inspect $(docker network ls -q)
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    docker network inspect $(docker network ls -q)
   register: docker_networks_raw
   changed_when: false
 
