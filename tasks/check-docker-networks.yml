@@ -62,13 +62,14 @@
       {{
         docker_subnets
         | product(host_subnets)
-        | selectattr(
-            '0',
-            'search',
-            '^' ~ (
-              item.1.split('/')[0]
-              | regex_replace('\\.[0-9]+$', '')
-            )
+        | select(
+            lambda pair:
+              pair.0 is search(
+                '^' ~ (
+                  pair.1.split('/')[0]
+                  | regex_replace('\\.[0-9]+$', '')
+                )
+              )
           )
         | list
       }}
