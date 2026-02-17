@@ -11,13 +11,20 @@
 #       name: gesinn.manage_base
 #       tasks_from: ensure-roles.yml
 
-- name: Ensure base roles
+- name: Ensure Base | Ensure base roles
   ansible.builtin.import_tasks: ensure-roles.yml
 
-- name: Configure journald retention
+
+- name: Ensure Base | Check Docker network sanity
+  ansible.builtin.import_tasks: check-docker-networks.yml
+  when: manage_base_docker_network_check | default(true)
+
+
+- name: Ensure Base | Configure journald retention
   ansible.builtin.import_tasks: configure-journald.yml
   when: manage_base_configure_journald | default(true)
 
-- name: Setup proxy
+
+- name: Ensure Base | Setup proxy
   ansible.builtin.import_tasks: setup-proxy.yml
   when: manage_base_setup_proxy | default(false)

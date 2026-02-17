@@ -1,6 +1,9 @@
 ---
 # defaults/main.yml
 
+manage_base_docker_network_check: true
+manage_base_docker_network_check_mode: fail   # fail | warn
+
 manage_base_setup_proxy: false
 manage_base_configure_journald: true
 
