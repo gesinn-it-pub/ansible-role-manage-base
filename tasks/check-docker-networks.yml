@@ -9,81 +9,38 @@
   failed_when: false
 
 
-# All following tasks are skipped cleanly if Docker is not present
-
-- name: Ensure Base | Collect Docker networks
-  ansible.builtin.shell: >
-    set -o pipefail &&
-    docker network inspect $(docker network ls -q)
-  register: docker_networks_raw
-  changed_when: false
-  when: docker_version.rc == 0
-
-
-- name: Ensure Base | Extract Docker subnets
-  ansible.builtin.set_fact:
-    docker_subnets: >-
-      {{
-        docker_networks_raw.stdout
-        | from_json
-        | map(attribute='IPAM.Config')
-        | flatten
-        | selectattr('Subnet', 'defined')
-        | map(attribute='Subnet')
-        | list
-      }}
-  when: docker_version.rc == 0
-
-
-- name: Ensure Base | Collect host routing table
-  ansible.builtin.command: ip route
-  register: host_routes_raw
-  changed_when: false
-  when: docker_version.rc == 0
-
-
-- name: Ensure Base | Extract non-Docker host subnets
-  ansible.builtin.set_fact:
-    host_subnets: >-
-      {{
-        host_routes_raw.stdout_lines
-        | select('match', '^[0-9]+\\.')
-        | reject('search', 'docker0|br-')
-        | map('regex_replace', ' .*', '')
-        | select('match', '.+/[0-9]+$')
-        | list
-      }}
-  when: docker_version.rc == 0
-
-
 - name: Ensure Base | Detect Docker / host subnet overlaps
-  ansible.builtin.set_fact:
-    docker_network_conflicts: >-
-      {{
-        docker_subnets
-        | product(host_subnets)
-        | select(
-            lambda pair:
-              pair.0 is search(
-                '^' ~ (
-                  pair.1.split('/')[0]
-                  | regex_replace('\\.[0-9]+$', '')
-                )
-              )
-          )
-        | list
-      }}
+  ansible.builtin.shell: |
+    set -euo pipefail
+
+    docker_subnets=$(docker network inspect $(docker network ls -q) \
+      | grep '"Subnet"' \
+      | sed 's/.*"Subnet": "\(.*\)".*/\1/')
+
+    host_subnets=$(ip route \
+      | awk '$0 ~ /^[0-9]+\./ && $0 !~ /(docker0|br-)/ {print $1}' \
+      | grep '/')
+
+    for d in $docker_subnets; do
+      d_base=$(echo "$d" | cut -d/ -f1 | sed 's/\.[0-9]*$//')
+      for h in $host_subnets; do
+        if [[ "$h" == $d_base* ]]; then
+          echo "Docker: $d <-> Host: $h"
+        fi
+      done
+    done
+  register: docker_network_conflicts
+  changed_when: false
   when: docker_version.rc == 0
 
 
 - name: Ensure Base | Assert no Docker network conflicts are present
   ansible.builtin.assert:
     that:
-      - docker_network_conflicts | length == 0
+      - docker_network_conflicts.stdout | trim == ""
     fail_msg: >
-      Docker network conflict detected.
-      Docker subnets overlap with host routing table:
-      {{ docker_network_conflicts }}
+      Docker network conflict detected:
+      {{ docker_network_conflicts.stdout }}
   when:
     - docker_version.rc == 0
     - manage_base_docker_network_check_mode | default('fail') == 'fail'
@@ -92,10 +49,9 @@
 - name: Ensure Base | Warn about Docker network conflicts
   ansible.builtin.debug:
     msg: >
-      WARNING: Docker network conflict detected.
-      Docker subnets overlap with host routing table:
-      {{ docker_network_conflicts }}
+      WARNING: Docker network conflict detected:
+      {{ docker_network_conflicts.stdout }}
   when:
     - docker_version.rc == 0
-    - docker_network_conflicts | length > 0
+    - docker_network_conflicts.stdout | trim != ""
     - manage_base_docker_network_check_mode | default('fail') == 'warn'
