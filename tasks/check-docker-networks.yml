@@ -9,10 +9,7 @@
   failed_when: false
 
 
-- name: Ensure Base | Skip Docker network check if Docker is not available
-  ansible.builtin.meta: end_play
-  when: docker_version.rc != 0
-
+# All following tasks are skipped cleanly if Docker is not present
 
 - name: Ensure Base | Collect Docker networks
   ansible.builtin.shell: >
@@ -20,6 +17,7 @@
     docker network inspect $(docker network ls -q)
   register: docker_networks_raw
   changed_when: false
+  when: docker_version.rc == 0
 
 
 - name: Ensure Base | Extract Docker subnets
@@ -34,12 +32,14 @@
         | map(attribute='Subnet')
         | list
       }}
+  when: docker_version.rc == 0
 
 
 - name: Ensure Base | Collect host routing table
   ansible.builtin.command: ip route
   register: host_routes_raw
   changed_when: false
+  when: docker_version.rc == 0
 
 
 - name: Ensure Base | Extract non-Docker host subnets
@@ -47,12 +47,13 @@
     host_subnets: >-
       {{
         host_routes_raw.stdout_lines
-        | select('match', '^[0-9]')
+        | select('match', '^[0-9]+\\.')
         | reject('search', 'docker0|br-')
         | map('regex_replace', ' .*', '')
-        | reject('equalto', 'default')
+        | select('match', '.+/[0-9]+$')
         | list
       }}
+  when: docker_version.rc == 0
 
 
 - name: Ensure Base | Detect Docker / host subnet overlaps
@@ -61,9 +62,17 @@
       {{
         docker_subnets
         | product(host_subnets)
-        | selectattr('0', 'ipaddr', attribute='1')
+        | selectattr(
+            '0',
+            'search',
+            '^' ~ (
+              item.1.split('/')[0]
+              | regex_replace('\\.[0-9]+$', '')
+            )
+          )
         | list
       }}
+  when: docker_version.rc == 0
 
 
 - name: Ensure Base | Assert no Docker network conflicts are present
@@ -74,7 +83,9 @@
       Docker network conflict detected.
       Docker subnets overlap with host routing table:
       {{ docker_network_conflicts }}
-  when: manage_base_docker_network_check_mode | default('fail') == 'fail'
+  when:
+    - docker_version.rc == 0
+    - manage_base_docker_network_check_mode | default('fail') == 'fail'
 
 
 - name: Ensure Base | Warn about Docker network conflicts
@@ -84,5 +95,6 @@
       Docker subnets overlap with host routing table:
       {{ docker_network_conflicts }}
   when:
+    - docker_version.rc == 0
     - docker_network_conflicts | length > 0
     - manage_base_docker_network_check_mode | default('fail') == 'warn'
