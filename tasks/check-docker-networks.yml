@@ -20,7 +20,7 @@
           out = subprocess.check_output(["docker", "network", "inspect"] + ids, text=True)
           subnets = []
           for net in json.loads(out):
-              for config in net.get("IPAM", {}).get("Config", []):
+              for config in (net.get("IPAM", {}).get("Config") or []):
                   s = config.get("Subnet")
                   if s:
                       subnets.append(s)
