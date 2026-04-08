@@ -1,0 +1,17 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Verify python3 is available
+      ansible.builtin.command: python3 --version
+      changed_when: false
+
+    - name: Check journald retention config
+      ansible.builtin.stat:
+        path: /etc/systemd/journald.conf.d/retention.conf
+      register: retention_conf
+
+    - name: Assert journald config is absent (no systemd in molecule container)
+      ansible.builtin.assert:
+        that: not retention_conf.stat.exists
+        fail_msg: "retention.conf must not be deployed without systemd"

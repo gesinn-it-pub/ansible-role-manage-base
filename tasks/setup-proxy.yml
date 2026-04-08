@@ -5,10 +5,16 @@
       ansible.builtin.file:
         path: /etc/systemd/system/docker.service.d
         state: directory
+        owner: root
+        group: root
+        mode: "0755"
 
     - name: Ensure Base | Setup proxy | Set docker http/https_proxy
       ansible.builtin.copy:
         dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+        owner: root
+        group: root
+        mode: "0644"
         content: |
           [Service]
           Environment="HTTP_PROXY={{ proxy_env.http_proxy }}"
@@ -24,7 +30,10 @@
         mode: '0700'
 
     - name: Ensure Base | Setup proxy | Create config.json
-      template:
+      ansible.builtin.template:
         src: docker/config.json # move to files
         dest: /root/.docker/config.json
+        owner: root
+        group: root
+        mode: "0600"
   when: proxy_env.http_proxy is defined
