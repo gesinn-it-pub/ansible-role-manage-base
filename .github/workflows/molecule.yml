@@ -1,4 +1,4 @@
-name: Lint
+name: Molecule
 
 on:
   push:
@@ -9,13 +9,13 @@ on:
 
 jobs:
 
-  ansible-lint:
+  molecule:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Run Lint
-        run: make lint
+      - name: Run molecule
+        run: make molecule
