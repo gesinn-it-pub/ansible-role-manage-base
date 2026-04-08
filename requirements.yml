@@ -1,2 +1,11 @@
 ---
+roles:
+  - name: geerlingguy.pip
+    src: https://github.com/geerlingguy/ansible-role-pip
+  - name: geerlingguy.docker
+    src: https://github.com/geerlingguy/ansible-role-docker
+  - name: gesinn.manage_traefik
+    src: git+https://github.com/gesinn-it-pub/ansible-role-manage-traefik.git
+    scm: git
+
 collections: []
