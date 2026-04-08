@@ -1,5 +1,6 @@
 - name: Ensure Base | Setup docker https_proxy if required
   environment: "{{ proxy_env }}"
+  when: proxy_env.http_proxy is defined
   block:
     - name: Ensure Base | Setup proxy | Create /etc/systemd/system/docker.service.d
       ansible.builtin.file:
@@ -36,4 +37,3 @@
         owner: root
         group: root
         mode: "0600"
-  when: proxy_env.http_proxy is defined
