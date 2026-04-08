@@ -10,23 +10,16 @@
 
 
 - name: Ensure Base | Detect Docker / host subnet overlaps
-  ansible.builtin.script:
-    cmd: /dev/stdin
-    executable: python3
-  args:
-    stdin: |
-      import ipaddress, subprocess, sys
+  ansible.builtin.shell:
+    cmd: |
+      python3 << 'PYEOF'
+      import ipaddress, json, subprocess, sys
 
       def get_docker_subnets():
-          out = subprocess.check_output(
-              ["docker", "network", "inspect"] +
-              subprocess.check_output(["docker", "network", "ls", "-q"],
-                                      text=True).split(),
-              text=True)
-          import json
-          networks = json.loads(out)
+          ids = subprocess.check_output(["docker", "network", "ls", "-q"], text=True).split()
+          out = subprocess.check_output(["docker", "network", "inspect"] + ids, text=True)
           subnets = []
-          for net in networks:
+          for net in json.loads(out):
               for config in net.get("IPAM", {}).get("Config", []):
                   s = config.get("Subnet")
                   if s:
@@ -38,37 +31,32 @@
           subnets = []
           for line in out.splitlines():
               parts = line.split()
-              if not parts:
+              if not parts or "/" not in parts[0]:
                   continue
-              dst = parts[0]
-              if "/" not in dst:
-                  continue
-              # skip docker-managed interfaces
               dev = parts[parts.index("dev") + 1] if "dev" in parts else ""
               if dev.startswith("docker") or dev.startswith("br-"):
                   continue
               try:
-                  ipaddress.ip_network(dst, strict=False)
-                  subnets.append(dst)
+                  ipaddress.ip_network(parts[0], strict=False)
+                  subnets.append(parts[0])
               except ValueError:
                   pass
           return subnets
 
       conflicts = []
       try:
-          docker_subnets = get_docker_subnets()
-          host_subnets = get_host_subnets()
-          for d in docker_subnets:
+          for d in get_docker_subnets():
               dn = ipaddress.ip_network(d, strict=False)
-              for h in host_subnets:
-                  hn = ipaddress.ip_network(h, strict=False)
-                  if dn.overlaps(hn):
+              for h in get_host_subnets():
+                  if dn.overlaps(ipaddress.ip_network(h, strict=False)):
                       conflicts.append(f"Docker: {d} <-> Host: {h}")
       except Exception as e:
           sys.exit(f"ERROR: {e}")
 
       if conflicts:
           print("\n".join(conflicts))
+      PYEOF
+    executable: /bin/bash
   register: docker_network_conflicts
   changed_when: false
   when: docker_version.rc == 0
