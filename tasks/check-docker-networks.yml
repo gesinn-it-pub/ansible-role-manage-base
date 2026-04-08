@@ -29,6 +29,8 @@
         fi
       done
     done
+  args:
+    executable: /bin/bash
   register: docker_network_conflicts
   changed_when: false
   when: docker_version.rc == 0
