@@ -1,0 +1,16 @@
+include::docs/attributes.adoc[]
+include::docs/gesinn-it-docs-master-pub/documents/{project_type}/AGENTS.adoc[]
+
+== Project-Specific Conventions
+
+*Variable naming — non-prefixed input parameters*
+
+Several variables in this role intentionally omit the `manage_base_` prefix:
+`proxy_env`, `docker_address_pools`, `journald_max_retention`,
+`journald_system_max_use`, `journald_system_max_file_size`.
+
+Rationale: these are *shared input parameters* passed in from the consumer playbook
+and are designed to be re-used across multiple roles (e.g. `proxy_env` is also
+consumed by `manage_wiki`). Applying a role-specific prefix would break this
+cross-role sharing convention and all existing consumer projects. A rename is
+deferred until a major version bump.
