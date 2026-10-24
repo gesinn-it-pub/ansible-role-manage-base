@@ -14,7 +14,8 @@ ANSIBLE_CORE ?=
 SCENARIO     ?=
 
 core-pin := $(if $(ANSIBLE_CORE),pip install -q --no-warn-script-location --user ansible-core~=$(ANSIBLE_CORE).0 && export PATH=\$$HOME/.local/bin:\$$PATH &&,)
-galaxy   := if [ -f requirements.yml ]; then ansible-galaxy collection install -r requirements.yml; fi
+galaxy   := if [ -f requirements.yml ]; then ansible-galaxy collection install -r requirements.yml \
+	&& ansible-galaxy role install -r requirements.yml -p /tmp/roles; fi
 mol-args := $(if $(SCENARIO),-s $(SCENARIO),--all)
 core-image := $(if $(ANSIBLE_CORE),$(ANSIBLE_DEV_TOOLS_IMAGE_PY313),$(ANSIBLE_DEV_TOOLS_IMAGE))
 
