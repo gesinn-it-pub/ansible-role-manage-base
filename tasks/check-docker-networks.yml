@@ -8,7 +8,6 @@
   changed_when: false
   failed_when: false
 
-
 - name: Ensure Base | Detect Docker / host subnet overlaps
   ansible.builtin.shell:
     cmd: |
@@ -61,7 +60,6 @@
   changed_when: false
   when: docker_version.rc == 0
 
-
 - name: Ensure Base | Assert no Docker network conflicts are present
   ansible.builtin.assert:
     that:
@@ -72,7 +70,6 @@
   when:
     - docker_version.rc == 0
     - manage_base_docker_network_check_mode | default('fail') == 'fail'
-
 
 - name: Ensure Base | Warn about Docker network conflicts
   ansible.builtin.debug:
