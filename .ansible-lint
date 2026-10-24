@@ -4,6 +4,8 @@ profile: production
 # Exclude files not meant to be linted directly
 exclude_paths:
   - .github/
+  # stand-ins named like the real dependency roles (with a dot) so they shadow them in molecule
+  - molecule/shared/roles/
 
 # Skip rules that don't apply to this role
 skip_list:
