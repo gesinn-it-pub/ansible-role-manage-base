@@ -6,7 +6,7 @@
       http_proxy: http://proxy.example.test:3128
       https_proxy: http://proxy.example.test:3128
   tasks:
-    # Stubbed: geerlingguy.pip, geerlingguy.docker and gesinn.manage_traefik
+    # Stubbed: geerlingguy.pip and geerlingguy.docker
     # (molecule/shared/roles); the docker CLI, `ip route` and systemctl
     # (molecule/shared/bin).
     # Untested: package installs, a real Docker daemon, systemd and service restarts.

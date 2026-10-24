@@ -8,6 +8,9 @@ Releases before 2.0.0 are listed on the [GitHub releases page](https://github.co
 
 ## [Unreleased]
 
+### Breaking Changes
+- Stop installing `gesinn.manage_traefik` from `ensure-roles.yml`; the Traefik role has its own required variables since 2.0 and is deployed by the consumer. Remove it from `requirements.yml` too, and include it in your own play if you relied on this role for it
+
 ## [2.0.0] - 2026-10-24
 
 Raises the minimum ansible-core to 2.19 and removes a deprecated task file name. Make the changes under Breaking

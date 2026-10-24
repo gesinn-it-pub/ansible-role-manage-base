@@ -14,7 +14,3 @@
       vars:
         docker_install_compose_plugin: true
         docker_daemon_options: "{{ {'default-address-pools': docker_address_pools} if (docker_address_pools | length) > 0 else {} }}"
-
-    - name: Ensure Base | Install manage_traefik
-      ansible.builtin.include_role:
-        name: gesinn.manage_traefik

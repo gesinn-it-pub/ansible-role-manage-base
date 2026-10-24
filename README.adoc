@@ -10,8 +10,7 @@ Special purpose Ansible role to manage fundamental setups and configurations tha
 
 `tasks/main.yml` runs these steps in order:
 
-. Installs `geerlingguy.pip`, `geerlingguy.docker` (with the compose plugin) and `gesinn.manage_traefik`
-  (`ensure-roles.yml`).
+. Installs `geerlingguy.pip`, `geerlingguy.docker` (with the compose plugin) (`ensure-roles.yml`).
 . Checks that no Docker network overlaps a subnet of the host (`check-docker-networks.yml`).
 . Limits the journald retention with a drop-in in `/etc/systemd/journald.conf.d/` (`configure-journald.yml`).
 . Optionally configures a proxy for the Docker daemon and the Docker client (`setup-proxy.yml`).
@@ -99,6 +98,13 @@ shared inputs that other roles read as well. They will be renamed with a major r
 
 `Restart docker` (after a changed proxy drop-in) and `Restart journald` (after a changed retention drop-in). Consumers
 may define handlers with the same name in their play.
+
+== Upgrading from 2.x
+
+* The role no longer installs `gesinn.manage_traefik`; `ensure-roles.yml` only runs `geerlingguy.pip` and
+  `geerlingguy.docker`. Include `gesinn.manage_traefik` (2.0 or newer, with `manage_traefik_version`) in your own play
+  after this role, and install it from your own `requirements.yml`. The role is not listed in this role's
+  `requirements.yml` any more.
 
 == Upgrading from 1.x
 
