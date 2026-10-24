@@ -21,7 +21,7 @@ journald step can be switched off.
 
 == Requirements
 
-* ansible-core 2.18 or newer (the CI tests the 2.18 floor and the latest release)
+* ansible-core 2.19 or newer (the CI tests the 2.19 floor and the latest release)
 * Ubuntu (jammy, noble) or Debian (bullseye, bookworm)
 * The roles listed in `requirements.yml`, pinned to the tested versions. Install them with
   `ansible-galaxy role install -r requirements.yml`.
@@ -110,7 +110,7 @@ may define handlers with the same name in their play.
 [source,shell]
 ----
 make lint       # ansible-lint, production profile
-make molecule   # all scenarios; ANSIBLE_CORE=2.18 runs the floor, SCENARIO=<name> runs one
+make molecule   # all scenarios; ANSIBLE_CORE=2.19 runs the floor, SCENARIO=<name> runs one
 ----
 
 The Molecule scenarios stub the dependency roles, `docker`, `ip` and `systemctl` (`molecule/shared`). Installing
