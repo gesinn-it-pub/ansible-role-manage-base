@@ -2,7 +2,12 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: Apply fix-python-EXTERNALLY_MANAGED
+    - name: Apply fix-python-externally-managed
+      ansible.builtin.include_role:
+        name: ansible-role-manage-base
+        tasks_from: fix-python-externally-managed.yml
+
+    - name: Apply the deprecated fix-python-EXTERNALLY_MANAGED name (still called by consumers)
       ansible.builtin.include_role:
         name: ansible-role-manage-base
         tasks_from: fix-python-EXTERNALLY_MANAGED.yml

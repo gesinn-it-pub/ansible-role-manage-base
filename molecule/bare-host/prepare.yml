@@ -1,0 +1,14 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Find the python3 stdlib directory the role derives from `python3 --version`
+      ansible.builtin.command: python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"
+      register: python_minor
+      changed_when: false
+
+    - name: Create an EXTERNALLY-MANAGED marker
+      ansible.builtin.copy:
+        dest: "/usr/lib/python{{ python_minor.stdout }}/EXTERNALLY-MANAGED"
+        content: "[externally-managed]\n"
+        mode: "0644"

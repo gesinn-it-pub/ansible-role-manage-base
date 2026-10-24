@@ -1,17 +1,8 @@
 ---
-# fix for https://github.com/geerlingguy/ansible-role-pip/issues/57
+# tasks/fix-python-EXTERNALLY_MANAGED.yml
+#
+# Deprecated name, kept because consumers call it with `tasks_from:`.
+# Use fix-python-externally-managed.yml instead. Remove with the next major release.
 
-- name: Ensure Base | Fix Python EXTERNALLY-MANAGED
-  become: true
-  block:
-    - name: Get Python 3.X version
-      ansible.builtin.command: python3 --version
-      register: pyver
-      changed_when: false
-      failed_when: pyver.rc != 0
-
-    - name: Remove Python 3.X EXTERNALLY-MANAGED file
-      ansible.builtin.file:
-        state: absent
-        path: "/usr/lib/python{{ pyver.stdout.split()[1] | regex_search('([0-9]+\\.[0-9]+)') }}/EXTERNALLY-MANAGED"
-      when: pyver.stdout is search('3\.[0-9]+')
+- name: Ensure Base | Fix Python EXTERNALLY-MANAGED (deprecated task file name)
+  ansible.builtin.import_tasks: fix-python-externally-managed.yml

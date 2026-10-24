@@ -15,3 +15,18 @@
       ansible.builtin.assert:
         that: not retention_conf.stat.exists
         fail_msg: "retention.conf must not be deployed without systemd"
+
+    - name: Find the python3 stdlib directory
+      ansible.builtin.command: python3 -c "import sys; print('%d.%d' % sys.version_info[:2])"
+      register: python_minor
+      changed_when: false
+
+    - name: Check the EXTERNALLY-MANAGED marker
+      ansible.builtin.stat:
+        path: "/usr/lib/python{{ python_minor.stdout }}/EXTERNALLY-MANAGED"
+      register: externally_managed
+
+    - name: Assert the EXTERNALLY-MANAGED marker was removed
+      ansible.builtin.assert:
+        that: not externally_managed.stat.exists
+        fail_msg: "EXTERNALLY-MANAGED must be removed by the role"
