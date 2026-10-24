@@ -1,0 +1,6 @@
+---
+# Stand-in for geerlingguy.pip: installing packages and starting services is not
+# possible in the test container, so this role is not exercised here.
+- name: Stub for geerlingguy.pip
+  ansible.builtin.debug:
+    msg: "geerlingguy.pip is stubbed in molecule"

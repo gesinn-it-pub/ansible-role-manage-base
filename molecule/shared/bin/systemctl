@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Stand-in for systemctl: reports every unit as loaded and running and accepts
+# restart / daemon-reload. Replaces systemd, so that service restarts
+# triggered by the handlers are not tested.
+if [ "$1" = "show" ]; then
+  printf 'LoadState=loaded\nActiveState=active\nSubState=running\nUnitFileState=enabled\n'
+fi
+exit 0

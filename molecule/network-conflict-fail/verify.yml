@@ -1,0 +1,12 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Read the network check result
+      ansible.builtin.slurp:
+        src: /tmp/network-check-result
+      register: result
+
+    - name: Assert an overlapping Docker network fails the run
+      ansible.builtin.assert:
+        that: (result.content | b64decode | trim) == 'failed'

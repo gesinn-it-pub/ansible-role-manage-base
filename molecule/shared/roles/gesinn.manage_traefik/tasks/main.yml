@@ -1,0 +1,6 @@
+---
+# Stand-in for gesinn.manage_traefik: installing packages and starting services is not
+# possible in the test container, so this role is not exercised here.
+- name: Stub for gesinn.manage_traefik
+  ansible.builtin.debug:
+    msg: "gesinn.manage_traefik is stubbed in molecule"

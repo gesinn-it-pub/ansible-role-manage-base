@@ -1,0 +1,39 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Read the journald retention drop-in
+      ansible.builtin.slurp:
+        src: /etc/systemd/journald.conf.d/retention.conf
+      register: retention_conf
+
+    - name: Assert journald retention uses the defaults
+      ansible.builtin.assert:
+        that:
+          - "'MaxRetentionSec=7day' in (retention_conf.content | b64decode)"
+          - "'SystemMaxUse=500M' in (retention_conf.content | b64decode)"
+          - "'SystemMaxFileSize=50M' in (retention_conf.content | b64decode)"
+
+    - name: Read the docker proxy drop-in
+      ansible.builtin.slurp:
+        src: /etc/systemd/system/docker.service.d/http-proxy.conf
+      register: proxy_conf
+
+    - name: Assert the docker daemon proxy is configured
+      ansible.builtin.assert:
+        that:
+          - >-
+            'HTTP_PROXY=http://proxy.example.test:3128' in (proxy_conf.content | b64decode)
+          - >-
+            'HTTPS_PROXY=http://proxy.example.test:3128' in (proxy_conf.content | b64decode)
+
+    - name: Read the docker client config
+      ansible.builtin.slurp:
+        src: /root/.docker/config.json
+      register: docker_config
+
+    - name: Assert the docker client proxy is valid JSON with the proxy set
+      ansible.builtin.assert:
+        that:
+          - (docker_config.content | b64decode | from_json).proxies.default.httpProxy == 'http://proxy.example.test:3128'
+          - (docker_config.content | b64decode | from_json).proxies.default.httpsProxy == 'http://proxy.example.test:3128'

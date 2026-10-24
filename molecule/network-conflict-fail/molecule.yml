@@ -1,0 +1,26 @@
+---
+driver:
+  name: default
+
+platforms:
+  - name: instance
+
+provisioner:
+  name: ansible
+  env:
+    # shared stubs first: they shadow the real dependency roles in /tmp/roles
+    ANSIBLE_ROLES_PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../shared/roles:/tmp/roles
+    PATH: ${MOLECULE_SCENARIO_DIRECTORY}/../shared/bin:${PATH}
+    # overlaps the only host route of the ip stub, 10.20.0.0/16
+    FAKE_DOCKER_SUBNET: 10.20.1.0/24
+  inventory:
+    hosts:
+      all:
+        hosts:
+          instance:
+            ansible_connection: local
+  options:
+    skip-tags: molecule_skip
+
+verifier:
+  name: ansible

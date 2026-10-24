@@ -1,0 +1,25 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    # Stubbed: the docker CLI and `ip route` (molecule/shared/bin). The docker
+    # network 10.20.1.0/24 overlaps the host route 10.20.0.0/16.
+    - name: Run the network check in warn mode
+      block:
+        - name: Apply check-docker-networks
+          ansible.builtin.include_role:
+            name: ansible-role-manage-base
+            tasks_from: check-docker-networks.yml
+          vars:
+            manage_base_docker_network_check_mode: warn
+        - name: Record that the check did not fail
+          ansible.builtin.copy:
+            dest: /tmp/network-check-result
+            content: "passed\n"
+            mode: "0644"
+      rescue:
+        - name: Record that the check failed
+          ansible.builtin.copy:
+            dest: /tmp/network-check-result
+            content: "failed\n"
+            mode: "0644"

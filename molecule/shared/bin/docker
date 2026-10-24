@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Stand-in for the docker CLI. Replaces the real daemon, so everything that
+# depends on a running Docker is untested. FAKE_DOCKER_SUBNET is the subnet
+# of the one user-defined network the stub reports.
+case "$1 $2" in
+  "version --format") echo "27.0.0" ;;
+  "info --format") echo "[awslogs fluentd gcplogs gelf journald json-file local splunk syslog]" ;;
+  "network ls") echo "aaaa" ;;
+  "network inspect")
+    printf '[{"IPAM": {"Config": [{"Subnet": "%s"}]}}]\n' "${FAKE_DOCKER_SUBNET:-172.31.0.0/16}" ;;
+  *) echo "docker stub: unsupported call: $*" >&2; exit 1 ;;
+esac

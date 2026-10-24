@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Stand-in for `ip route`: the host has exactly one route, 10.20.0.0/16.
+# Replaces the real routing table, so the host side of the overlap check
+# is only tested against this fixed network.
+if [ "$1" = "route" ]; then
+  echo "default via 10.20.0.1 dev eth0"
+  echo "10.20.0.0/16 dev eth0 proto kernel scope link src 10.20.0.5"
+else
+  echo "ip stub: unsupported call: $*" >&2; exit 1
+fi
