@@ -1,8 +1,0 @@
----
-# tasks/fix-python-EXTERNALLY_MANAGED.yml
-#
-# Deprecated name, kept because consumers call it with `tasks_from:`.
-# Use fix-python-externally-managed.yml instead. Remove with the next major release.
-
-- name: Ensure Base | Fix Python EXTERNALLY-MANAGED (deprecated task file name)
-  ansible.builtin.import_tasks: fix-python-externally-managed.yml

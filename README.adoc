@@ -100,10 +100,10 @@ shared inputs that other roles read as well. They will be renamed with a major r
 `Restart docker` (after a changed proxy drop-in) and `Restart journald` (after a changed retention drop-in). Consumers
 may define handlers with the same name in their play.
 
-== Deprecated
+== Upgrading from 1.x
 
-* `tasks_from: fix-python-EXTERNALLY_MANAGED.yml` is now `fix-python-externally-managed.yml`. The old name still
-  works and is removed with the next major release.
+* ansible-core 2.19 or newer is required (1.x supported 2.18).
+* `tasks_from: fix-python-EXTERNALLY_MANAGED.yml` was removed. Use `fix-python-externally-managed.yml`.
 
 == Development
 
