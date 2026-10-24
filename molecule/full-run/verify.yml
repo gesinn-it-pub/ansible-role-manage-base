@@ -37,3 +37,8 @@
         that:
           - (docker_config.content | b64decode | from_json).proxies.default.httpProxy == 'http://proxy.example.test:3128'
           - (docker_config.content | b64decode | from_json).proxies.default.httpsProxy == 'http://proxy.example.test:3128'
+
+    - name: Assert the docker client noProxy keeps its default
+      ansible.builtin.assert:
+        that:
+          - (docker_config.content | b64decode | from_json).proxies.default.noProxy == 'elasticsearch,wiki,127.0.0.0/8'

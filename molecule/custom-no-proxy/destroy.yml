@@ -1,0 +1,16 @@
+---
+# The local driver changes the machine that runs the test, so remove what the
+# scenario created. Otherwise scenarios that expect a bare host would depend on
+# the run order.
+- name: Destroy
+  hosts: all
+  tasks:
+    - name: Remove files and directories created by the scenario
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /run/systemd/system
+        - /etc/systemd/journald.conf.d
+        - /etc/systemd/system/docker.service.d
+        - /root/.docker

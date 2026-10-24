@@ -1,0 +1,11 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    # The role only configures journald when systemd is present. The test
+    # container has no running systemd, only this marker directory.
+    - name: Create the systemd marker directory
+      ansible.builtin.file:
+        path: /run/systemd/system
+        state: directory
+        mode: "0755"

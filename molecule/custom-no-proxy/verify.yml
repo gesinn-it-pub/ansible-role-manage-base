@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Read the docker client config
+      ansible.builtin.slurp:
+        src: /root/.docker/config.json
+      register: docker_config
+
+    - name: Assert the docker client noProxy uses the configured list
+      ansible.builtin.assert:
+        that:
+          - (docker_config.content | b64decode | from_json).proxies.default.noProxy == 'localhost,127.0.0.0/8,.corp.example.test'

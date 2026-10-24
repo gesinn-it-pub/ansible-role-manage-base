@@ -5,6 +5,7 @@ manage_base_docker_network_check: true
 manage_base_docker_network_check_mode: fail   # fail | warn
 
 manage_base_setup_proxy: false
+manage_base_docker_no_proxy: "elasticsearch,wiki,127.0.0.0/8"   # noProxy of the docker client config
 manage_base_configure_journald: true
 
 proxy_env: {}
