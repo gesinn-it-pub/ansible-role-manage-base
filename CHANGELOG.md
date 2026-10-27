@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/) and
 
 ## [Unreleased]
 
+### Changed
+- Declare EL 8 (Rocky Linux) as a supported platform. The role has no distribution specific code; it is not covered by the Molecule scenarios, which do not run a real package manager or Docker daemon
+
 ## [3.0.0] - 2026-10-24
 
 Stops installing the Traefik role. Make the change under Breaking Changes before you update.

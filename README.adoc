@@ -21,7 +21,7 @@ journald step can be switched off.
 == Requirements
 
 * ansible-core 2.19 or newer (the CI tests the 2.19 floor and the latest release)
-* Ubuntu (jammy, noble) or Debian (bullseye, bookworm)
+* Ubuntu (jammy, noble), Debian (bullseye, bookworm) or EL 8 (Rocky Linux)
 * The roles listed in `requirements.yml`, pinned to the tested versions. Install them with
   `ansible-galaxy role install -r requirements.yml`.
 * Privileges: run the play with `become: true`
