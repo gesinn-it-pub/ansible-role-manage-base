@@ -6,11 +6,15 @@ This project adheres to [Semantic Versioning](https://semver.org/) and
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-10-27
+
+Fixes the Docker network check on hosts with an old default Python, e.g. Rocky Linux 8, and declares EL 8 as a supported platform.
+
 ### Fixed
-- Run the Docker network check on hosts whose `python3` is 3.6, e.g. Rocky Linux 8. It failed there with a Python error before anything else ran
+- Run the Docker network check on hosts whose `python3` is 3.6, e.g. Rocky Linux 8. It failed there with a Python error before anything else ran [`32a7182`](https://github.com/gesinn-it-pub/ansible-role-manage-base/commit/32a7182)
 
 ### Changed
-- Declare EL 8 (Rocky Linux) as a supported platform. The role has no distribution specific code; it is not covered by the Molecule scenarios, which do not run a real package manager or Docker daemon
+- Declare EL 8 (Rocky Linux) as a supported platform. The role has no distribution specific code; it is not covered by the Molecule scenarios, which do not run a real package manager or Docker daemon [`b16ec45`](https://github.com/gesinn-it-pub/ansible-role-manage-base/commit/b16ec45)
 
 ## [3.0.0] - 2026-10-24
 
@@ -19,7 +23,8 @@ Stops installing the Traefik role. Make the change under Breaking Changes before
 ### Breaking Changes
 - Stop installing `gesinn.manage_traefik`; include it in your own play if you relied on this role for it, and keep it in your own `requirements.yml` [`d05aa1e`](https://github.com/gesinn-it-pub/ansible-role-manage-base/commit/d05aa1e)
 
-[Unreleased]: https://github.com/gesinn-it-pub/ansible-role-manage-base/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/gesinn-it-pub/ansible-role-manage-base/compare/3.0.1...HEAD
+[3.0.1]: https://github.com/gesinn-it-pub/ansible-role-manage-base/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/gesinn-it-pub/ansible-role-manage-base/compare/2.0.0...3.0.0
 
 Older releases: [2.x](CHANGELOG-2.x.md)
