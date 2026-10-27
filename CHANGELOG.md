@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/) and
 
 ## [Unreleased]
 
+### Fixed
+- Run the Docker network check on hosts whose `python3` is 3.6, e.g. Rocky Linux 8. It failed there with a Python error before anything else ran
+
 ### Changed
 - Declare EL 8 (Rocky Linux) as a supported platform. The role has no distribution specific code; it is not covered by the Molecule scenarios, which do not run a real package manager or Docker daemon
 

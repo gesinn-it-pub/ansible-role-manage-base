@@ -15,8 +15,8 @@
       import ipaddress, json, subprocess, sys
 
       def get_docker_subnets():
-          ids = subprocess.check_output(["docker", "network", "ls", "-q"], text=True).split()
-          out = subprocess.check_output(["docker", "network", "inspect"] + ids, text=True)
+          ids = subprocess.check_output(["docker", "network", "ls", "-q"], universal_newlines=True).split()
+          out = subprocess.check_output(["docker", "network", "inspect"] + ids, universal_newlines=True)
           subnets = []
           for net in json.loads(out):
               for config in (net.get("IPAM", {}).get("Config") or []):
@@ -26,7 +26,7 @@
           return subnets
 
       def get_host_subnets():
-          out = subprocess.check_output(["ip", "route"], text=True)
+          out = subprocess.check_output(["ip", "route"], universal_newlines=True)
           subnets = []
           for line in out.splitlines():
               parts = line.split()
